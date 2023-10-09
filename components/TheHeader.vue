@@ -231,7 +231,7 @@
     cursor: pointer;
 }
 
-.header_elem2__part_right>a:active :link :visited {
+.header_elem2__part_right>a:active, :link, :visited {
     text-decoration: none;
     color: #201E45;
 }
@@ -354,14 +354,10 @@ export default {
             cathegory: 'По категории',
             manufacturer: 'Производитель',
             info: null,
-            data_catalog: [],
+            data_catalog: []
         };
     },
-    // data_api: function () {
-    //     return {
-    //         info: null
-    //     }
-    // },
+
     methods: {
         drop: function () {
             var a = document.getElementById('dropdown');
