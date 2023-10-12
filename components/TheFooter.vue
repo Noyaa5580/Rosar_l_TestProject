@@ -19,7 +19,7 @@
         </div>
         <div v-on:click.once="get_manufacturer()" @click="get_manufacturers()" class="manufacturer">Производители <img src="~/static/manufacturers.svg" alt=""></div>
         <div  class="items_manufacturer" id="items_in_manufacturer">
-            <div v-for="item in manufacturer_footer" :key="index" class="man_items" id="manufacturer_items"><p>{{ item }}</p></div>
+            <div v-for="item in manufacturer_footer" :key="item" class="man_items" id="manufacturer_items"><p>{{ item }}</p></div>
         </div>
         <div v-on:click="email_sending()" class="email_send">
             <p>Подпишитесь на рассылку</p>
@@ -145,7 +145,7 @@
     align-items: center;
     position: absolute;
     right: 385px;
-    top: 240px;
+    top: 680px;
     z-index: 1;
     border-radius: 20px;
     width: 360px;
@@ -198,7 +198,7 @@ export default {
     },
     mounted() {
         axios
-            .get("https://www.rosar-l.ru/api/v2/manufacturers")
+            .get("/api/v2/manufacturers")
             .then((response) => (this.manufacturer = response));
     },
 };

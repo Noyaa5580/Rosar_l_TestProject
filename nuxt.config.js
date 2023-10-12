@@ -55,7 +55,7 @@ export default {
   },
 
   proxy: {
-    '/api/': { target: 'https://www.rosar-l.ru/api/v2/categories/', pathRewrite: {'^/api/': ''} }
+    '/api/': { target: 'https://rosar-l.ru/api/', pathRewrite: {'^/api/': ''}, changeOrigin: true }
   },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build

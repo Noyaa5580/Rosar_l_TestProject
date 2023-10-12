@@ -429,9 +429,9 @@ export default {
             catalog.classList.toggle('show2')
         }
     },
-    beforeCreate() {
+   mounted() {
         axios
-            .get('https://www.rosar-l.ru/api/v2/categories')
+            .get('/api/v2/categories')
             .then(response => (this.info = response));
 
     }
