@@ -16,13 +16,14 @@
         </div>
         <div class="header_elem2">
             <div class="header_elem2__part_left">
-                <div v-on:click.once="get_catalog()" @click="get_catalog_show()" class="header_elem2__button-catalog" id="catalog_button">
+                <div v-on:click.once="get_catalog()" @click="get_catalog_show()" class="header_elem2__button-catalog"
+                    id="catalog_button">
                     <div></div>
                     <div id="button-catalog__point"></div>
                     <div></div>
                 </div>
                 <div class="elem2_catalog" id="catalog_all">
-                    <div v-for="item in data_catalog" :key="index" class="item_catalog"><img
+                    <div v-for="item in data_catalog" :key="item" class="item_catalog"><img
                             src="~static/catalog_drop_icon.svg" alt="">{{ item }}</div>
                 </div>
                 <div class="logo">
@@ -38,26 +39,34 @@
             <div class="null">
                 <form action="" class="Searching-module" id="searching_module">
                     <div v-on:click="drop()" id="categories">
-                        <p id="drop_main"><img src="~/static/dropdown_pointer.png" alt="">{{ $data.all }}</p>
+                        <p id="drop_main">{{ $data.all }}</p>
                         <div id="dropdown" class="dropdown-content">
                             <p v-on:click="change_cathegory1()" class="drop-content" id="drop1">{{ $data.name }}</p>
                             <p v-on:click="change_cathegory2()" class="drop-content" id="drop2">{{ $data.article }}</p>
                             <p v-on:click="change_cathegory3()" class="drop-content" id="drop3">{{ $data.cathegory }}</p>
                             <p v-on:click="change_cathegory4()" class="drop-content" id="drop4">{{ $data.manufacturer }}</p>
+                            <p v-on:click="change_cathegory5()" class="drop-content" id="drop4">{{ $data.all }}</p>
                         </div>
                     </div>
-                    <input type="text" name="search" id="searching_input"
+                    <input type="text" v-model="value" id="searching_input"
                         placeholder="Поиск по артикулу/ названию/ категории/ производителю">
-                    <div v-on:click="close_search()" class="toggle_elem" id="cross"><img src="~/static/cross.svg" alt="">
-                    </div>
+                    <p id="searched_text">{{ value }}</p>
                     <div class="search_button" id="s_btn"><img src="~static/icons/search.svg" alt=""></div>
                 </form>
-
+                <div class="searched_items_all">
+                    <div v-for="item in search_name" :key="item" class="searched_item">
+                        <div>{{ item.name }}</div>
+                        <img :src="'https://rosar-l.ru/media/images/' + item.product_full_image" class="searched_pic">
+                    </div>
+                    <div v-for="item in search_categories" :key="item" class="searched_item">
+                        <div>{{ item.category_name }}</div>
+                    </div>
+                    <div v-for="item in search_manufacturers" :key="item" class="searched_item">
+                        <div>{{ item.mf_name}}</div>
+                    </div>
+                </div>
             </div>
             <div class="header_elem2__part_right">
-                <div v-on:click="search()" id="part_right__search"><img src="~static/icons/search.svg" alt="">
-                    <p>Поиск</p>
-                </div>
                 <a href="#"><img src="~static/icons/basket.svg" alt="">
                     <p id="part_right__2">Корзина</p>
                 </a>
@@ -203,10 +212,6 @@
     margin-right: 24px;
 }
 
-.null {
-    width: 30%;
-}
-
 .header_elem2__part_right {
     display: flex;
     align-items: center;
@@ -231,7 +236,9 @@
     cursor: pointer;
 }
 
-.header_elem2__part_right>a:active, :link, :visited {
+.header_elem2__part_right>a:active,
+:link,
+:visited {
     text-decoration: none;
     color: #201E45;
 }
@@ -251,7 +258,7 @@
 
 .Searching-module {
     transition: all ease-in 300ms;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     height: 60px;
@@ -286,12 +293,13 @@
 
 .dropdown-content {
     display: none;
+    z-index: 2;
     background-color: #EfEfEF;
     font-family: "Raleway";
     position: relative;
     width: 145px;
     top: 65px;
-    right: 75px;
+    right: 55px;
     border-radius: 8px;
     font-size: 12px;
     padding: 3px;
@@ -314,7 +322,8 @@
 .show2 {
     display: flex;
 }
-.show3{
+
+.show3 {
     display: none;
 }
 
@@ -341,6 +350,38 @@
     margin-right: 12px;
     cursor: pointer;
 }
+
+#searched_text {
+    display: none;
+}
+
+.searched_items_all {
+    display: flex;
+    background-color: #E4E4EF;
+    flex-direction: column;
+    position: absolute;
+    z-index: 1;
+    width: 818px;
+    font-family: 'Raleway';
+    color: #201E45;
+    padding: 12px;
+    border-radius: 12px;
+}
+
+.searched_pic {
+    margin-left: 60px;
+    max-height: 80px;
+    max-width: 80px;
+}
+
+.searched_item {
+    margin: 4px;
+    padding: 4px;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+}
 </style>
 
 <script>
@@ -350,14 +391,17 @@ export default {
         return {
             all: 'Везде',
             name: 'По наименованию',
-            article: 'По арткулу',
+            article: 'По артикулу',
             cathegory: 'По категории',
             manufacturer: 'Производитель',
             info: null,
-            data_catalog: []
+            data_catalog: [],
+            search_name: [],
+            search_categories: [],
+            search_manufacturers: [],
+            value: ''
         };
     },
-
     methods: {
         drop: function () {
             var a = document.getElementById('dropdown');
@@ -367,13 +411,13 @@ export default {
             let droppoint = document.getElementById('drop_main');
             droppoint.innerHTML = this.$data.name;
             let a = document.getElementById('dropdown');
-            a.style.right = '165px';
+            a.style.right = '145px';
         },
         change_cathegory2: function () {
             let droppoint = document.getElementById('drop_main');
             droppoint.innerHTML = this.$data.article;
             let a = document.getElementById('dropdown');
-            a.style.right = '90px';
+            a.style.right = '100px';
         },
         change_cathegory3: function () {
             let droppoint = document.getElementById('drop_main');
@@ -386,6 +430,12 @@ export default {
             droppoint.innerHTML = this.$data.manufacturer;
             let a = document.getElementById('dropdown');
             a.style.right = '122px';
+        },
+        change_cathegory5: function () {
+            let droppoint = document.getElementById('drop_main');
+            droppoint.innerHTML = this.$data.all;
+            let a = document.getElementById('dropdown');
+            a.style.right = '50px';
         },
         search: function () {
             let button_s = document.getElementById("part_right__search");
@@ -424,16 +474,56 @@ export default {
             });
             console.log(this.data_catalog)
         },
-        get_catalog_show: function(){
+        get_catalog_show: function () {
             let catalog = document.getElementById('catalog_all');
             catalog.classList.toggle('show2')
-        }
-    },
-   mounted() {
-        axios
-            .get('/api/v2/categories')
-            .then(response => (this.info = response));
+        },
 
+    },
+    mounted() {
+        this.$watch('value', function () {
+            let drop_main = document.getElementById('drop_main');
+            if (drop_main.innerHTML == "Везде") {
+                axios
+                    .get('/api/v2/search/?type=all&text=' + this.value)
+                    .then(response => {
+                        this.search_name = response.data.products;
+                        this.search_categories = response.data.categories;
+                        this.search_manufacturers = response.data.manufacturers;
+                    });
+            };
+            if (drop_main.innerHTML == "По наименованию") {
+                axios
+                    .get('/api/v2/search/?type=name&text=' + this.value)
+                    .then(response => {
+                        this.search_name = response.data.products;
+                    });
+            };
+            if (drop_main.innerHTML == "По артикулу") {
+                axios
+                    .get('/api/v2/search/?type=article&text=' + this.value)
+                    .then(response => {
+                        this.search_data = response.data.products;
+                    });
+            };
+            if (drop_main.innerHTML == "Производитель") {
+                axios
+                    .get('/api/v2/search/?type=manufacturers&text=' + this.value)
+                    .then(response => {
+                        this.search_manufacturers = response.data.manufacturers;
+                    });
+            };
+            if (drop_main.innerHTML == "По категории") {
+                axios
+                    .get('/api/v2/search/?type=categories&text=' + this.value)
+                    .then(response => {
+                        this.search_categories = response.data.categories;
+                    });
+            };
+        }),
+            axios
+                .get('/api/v2/categories')
+                .then(response => (this.info = response));
     }
 } 
 </script>
