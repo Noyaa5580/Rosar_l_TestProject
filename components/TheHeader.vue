@@ -26,9 +26,11 @@
                     <div v-for="item in data_catalog" :key="item" class="item_catalog"><img
                             src="~static/catalog_drop_icon.svg" alt="">{{ item }}</div>
                 </div>
-                <div class="logo">
-                    <img src="~/static/logo.svg" alt="">
-                </div>
+                <Nuxt-link to="/">
+                    <div class="logo">
+                        <img src="~/static/logo.svg" alt="">
+                    </div>
+                </Nuxt-link>
                 <a href="#" class="link_header_1">
                     <div class="header_elem2__ring_button" id="ring_button">
                         <p id="ring_button__elem1">+7 (499) 248-09-09</p>
@@ -62,7 +64,7 @@
                         <div>{{ item.category_name }}</div>
                     </div>
                     <div v-for="item in search_manufacturers" :key="item" class="searched_item">
-                        <div>{{ item.mf_name}}</div>
+                        <div>{{ item.mf_name }}</div>
                     </div>
                 </div>
             </div>

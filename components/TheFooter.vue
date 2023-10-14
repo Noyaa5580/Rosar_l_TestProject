@@ -145,7 +145,6 @@
     align-items: center;
     position: absolute;
     right: 385px;
-    top: 680px;
     z-index: 1;
     border-radius: 20px;
     width: 360px;
